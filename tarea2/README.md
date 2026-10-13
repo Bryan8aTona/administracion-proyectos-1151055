@@ -12,7 +12,8 @@
 ## Contenido
 
 1. [Parte 1 · El entorno de desarrollo móvil](#parte-1--el-entorno-de-desarrollo-móvil)
-2. [Parte 3 · MCP: implementación](#parte-3--mcp-implementación)
+2. [Parte 2 · MCP: investigación](#parte-2--mcp-investigación)
+3. [Parte 3 · MCP: implementación](#parte-3--mcp-implementación)
 
 ---
 
@@ -80,6 +81,37 @@ Abrí la carpeta raíz `HolaMundoKMP` en Android Studio y, después del Gradle s
 | Problema | Causa | Solución |
 |---|---|---|
 | La primera vez, `flutter run` falló con `Android sdkmanager did not install NDK 28.2.13676358` | El proyecto necesita el NDK de Android y Gradle intentó instalarlo solo, pero la herramienta `sdkmanager` ya está obsoleta y su reemplazo no encontró el paquete | Instalar el NDK 28.2.13676358 por separado, desde *SDK Manager → SDK Tools → Show Package Details → NDK (Side by side)*, y repetir `flutter run` |
+
+---
+
+## Parte 2 · MCP: investigación
+
+La investigación está en la carpeta [`docs/`](docs/), un archivo por tema. La versión de la especificación de MCP que consulté es la **2026-07-28**.
+
+| # | Tema | Resumen |
+|---|---|---|
+| 1 | [Evolución de los modelos](docs/01-evolucion-de-los-modelos.md) | De los modelos de lenguaje a los LLM, y por qué el razonamiento explícito viene del entrenamiento y del cómputo al responder, no sólo del tamaño |
+| 2 | [El problema del aislamiento](docs/02-el-problema-del-aislamiento.md) | Por qué un LLM por sí solo no puede tocar archivos: razones de arquitectura y de seguridad |
+| 3 | [MCP frente a una API](docs/03-mcp-frente-a-una-api.md) | Explicado con la analogía de un restaurante: quién decide qué se invoca, cómo se descubren las capacidades, y por qué MCP envuelve APIs en lugar de sustituirlas |
+| 4 | [Arquitectura](docs/04-arquitectura.md) | Host, cliente y servidor en mi instalación; primitivas; transportes stdio y Streamable HTTP |
+| 5 | [El servidor de sistema de archivos](docs/05-el-servidor-de-sistema-de-archivos.md) | Sus 14 herramientas, cómo lo limitan los directorios permitidos y qué pasaría sin ese límite |
+| 6 | [Seguridad](docs/06-seguridad.md) | Riesgos y mitigaciones, con lo que comprobé en la prueba del límite |
+| 7 | [Casos de uso](docs/07-casos-de-uso.md) | Claude Desktop, Claude Code, VS Code y Google Antigravity |
+
+### MCP frente a una API
+
+| Aspecto | API tradicional | MCP |
+|---|---|---|
+| **Quién decide qué se invoca** | El programador, al escribir el código | El modelo, en el momento, según lo que pide el usuario |
+| **Cómo se descubren las capacidades** | Leyendo la documentación antes de programar | En tiempo de ejecución, con `tools/list` |
+| **Acoplamiento** | Fuerte: si la API cambia, hay que cambiar el programa | Débil: una herramienta nueva aparece en el siguiente `tools/list` |
+| **Formato de los mensajes** | Varía: REST, GraphQL, SOAP, gRPC... | Siempre JSON-RPC 2.0 |
+| **Autenticación y consentimiento** | Llaves o tokens; el usuario no aprueba cada llamada | Tokens u OAuth en servidores remotos, y el host pide consentimiento antes de cada herramienta |
+| **Reutilización entre aplicaciones** | Cada aplicación hace su propia integración | Un servidor sirve para cualquier cliente compatible |
+
+MCP no sustituye a las APIs: su arquitectura sólo define la conversación entre cliente y servidor, y lo que el servidor haga por dentro es libre. Casi siempre trabaja encima de una API que ya existe; el servidor de archivos que instalé, por ejemplo, usa por dentro la API de archivos de Node.js, no una API web.
+
+Una forma de entenderlo es con un restaurante: **la API es el mesero que atiende a programas con las reglas de cada restaurante**, y un programador tiene que leer la carta antes y dejar el pedido fijo en el código. **MCP es el acuerdo para que cualquier IA llegue a cualquier restaurante, lea la carta sola y decida qué pedir**; el mesero MCP, que es el servidor, se encarga de que se prepare, casi siempre pasándoselo al mesero de siempre, la API. La analogía completa está en [docs/03](docs/03-mcp-frente-a-una-api.md).
 
 ---
 

@@ -1,0 +1,19 @@
+{
+  "name": "ayudante-tareas-mcp",
+  "version": "1.0.0",
+  "description": "Servidor MCP propio para la Tarea 2: días restantes y conteo de palabras",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "author": "Bryan Tonatiuh Ochoa De La Cruz",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.3.1",
+    "zod": "4.6.7"
+  }
+}

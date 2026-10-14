@@ -15,6 +15,9 @@
 2. [Parte 2 · MCP: investigación](#parte-2--mcp-investigación)
 3. [Parte 3 · MCP: implementación](#parte-3--mcp-implementación)
 4. [Servidor MCP propio (opcional)](#servidor-mcp-propio-opcional)
+5. [Conclusiones](#conclusiones)
+6. [Uso de inteligencia artificial](#uso-de-inteligencia-artificial)
+7. [Referencias](#referencias)
 
 ---
 
@@ -87,7 +90,7 @@ Abrí la carpeta raíz `HolaMundoKMP` en Android Studio y, después del Gradle s
 
 ## Parte 2 · MCP: investigación
 
-La investigación está en la carpeta [`docs/`](docs/), un archivo por tema. La versión de la especificación de MCP que consulté es la **2026-07-28**.
+La investigación está en la carpeta [`docs/`](docs/), un archivo por tema. La versión de la especificación de MCP que consulté es la **2026-07-28** (Model Context Protocol, 2026a).
 
 | # | Tema | Resumen |
 |---|---|---|
@@ -110,7 +113,7 @@ La investigación está en la carpeta [`docs/`](docs/), un archivo por tema. La 
 | **Autenticación y consentimiento** | Llaves o tokens; el usuario no aprueba cada llamada | Tokens u OAuth en servidores remotos, y el host pide consentimiento antes de cada herramienta |
 | **Reutilización entre aplicaciones** | Cada aplicación hace su propia integración | Un servidor sirve para cualquier cliente compatible |
 
-MCP no sustituye a las APIs: su arquitectura sólo define la conversación entre cliente y servidor, y lo que el servidor haga por dentro es libre. Casi siempre trabaja encima de una API que ya existe; el servidor de archivos que instalé, por ejemplo, usa por dentro la API de archivos de Node.js, no una API web.
+MCP no sustituye a las APIs: su arquitectura sólo define la conversación entre cliente y servidor, y lo que el servidor haga por dentro es libre (Model Context Protocol, 2026b). Casi siempre trabaja encima de una API que ya existe; el servidor de archivos que instalé, por ejemplo, usa por dentro la API de archivos de Node.js, no una API web.
 
 Una forma de entenderlo es con un restaurante: **la API es el mesero que atiende a programas con las reglas de cada restaurante**, y un programador tiene que leer la carta antes y dejar el pedido fijo en el código. **MCP es el acuerdo para que cualquier IA llegue a cualquier restaurante, lea la carta sola y decida qué pedir**; el mesero MCP, que es el servidor, se encarga de que se prepare, casi siempre pasándoselo al mesero de siempre, la API. La analogía completa está en [docs/03](docs/03-mcp-frente-a-una-api.md).
 
@@ -122,7 +125,7 @@ Una forma de entenderlo es con un restaurante: **la API es el mesero que atiende
 
 Elegí **Claude Desktop** por tres razones:
 
-- Es la aplicación con la que se presentó MCP y la que usa la documentación oficial del protocolo para conectar servidores locales, así que cada paso se puede comparar con una referencia.
+- Es la aplicación con la que se presentó MCP (Anthropic, 2024) y la que usa la documentación oficial del protocolo para conectar servidores locales (Model Context Protocol, s.f.-a), así que cada paso se puede comparar con una referencia.
 - La configuración es un solo archivo JSON, sin extensiones ni suscripciones adicionales, y es fácil de reproducir en otra máquina.
 - Pide aprobación antes de cada uso de una herramienta (*Permitir una vez*, *Permitir siempre* o *Rechazar*), y su configuración separa las herramientas de sólo lectura de las de escritura. Eso deja ver la confirmación humana que se discute en el apartado de seguridad.
 
@@ -270,3 +273,65 @@ Access denied - path outside allowed directories: C:\dev\fuera-de-mcp\secreto.tx
 Programé un servidor MCP, `ayudante-tareas`, en JavaScript con el SDK oficial de TypeScript (`@modelcontextprotocol/server` 2.3.1). Tiene dos herramientas: `dias_restantes`, que dice cuántos días faltan para una fecha, y `contar_palabras`, que cuenta las palabras y los caracteres de un texto. A diferencia del servidor de archivos, no usa ninguna API ni toca el disco: hace el trabajo él mismo. Lo conecté a Claude Desktop junto al servidor `filesystem`.
 
 El código, la instalación paso a paso y las capturas están en [`servidor-propio/`](servidor-propio/).
+
+---
+
+## Conclusiones
+
+**El entorno móvil.** Que `flutter doctor` saliera sin errores no garantizaba que el proyecto compilara. El primer `flutter run` falló porque el proyecto pedía una versión exacta del NDK que no estaba instalada, y lo resolví instalándola a mano desde el SDK Manager. Me quedo con que las versiones las fija el proyecto, no lo que uno tenga instalado, y por eso conviene anotarlas, como en la tabla de la Parte 1.
+
+**MCP frente a una API.** La diferencia principal está en quién decide. Con una API, el programador lee la documentación y deja cada llamada fija en el código. Con MCP, el modelo descubre las herramientas en el momento con `tools/list` y decide cuál usar según lo que le pido, y el host me pide permiso antes de usarla. MCP no sustituye a las APIs: sólo estandariza la conversación entre cliente y servidor, y lo que el servidor haga por dentro es libre.
+
+**El servidor de sistema de archivos.** Habilita exactamente sus 14 herramientas, que sirven para listar, leer, crear, editar, mover y buscar archivos, y sólo dentro de la carpeta que le di en la configuración, `C:\dev\mcp-tarea2`. Lo que más me sirvió fue la prueba del límite: aunque aprobé la llamada para leer `C:\dev\fuera-de-mcp\secreto.txt`, el servidor la rechazó con `Access denied`. La seguridad no depende de que el modelo se porte bien, sino de que el servidor valida cada ruta antes de tocar el disco.
+
+**El servidor propio.** Al programar `ayudante-tareas` vi que el SDK se encarga de todo el protocolo y que yo sólo defino, para cada herramienta, el nombre, la descripción, los datos que recibe y la función que hace el trabajo. La descripción importa más de lo que parece, porque es lo que el modelo lee para decidir cuándo usarla. También comprobé que un servidor MCP no necesita una API detrás: el mío hace las cuentas él mismo.
+
+---
+
+## Uso de inteligencia artificial
+
+Hice uso de un asistente de inteligencia artificial como guía auxiliar para organizar el flujo de trabajo del proyecto, resolver problemas de configuración del entorno (como la instalación del NDK), ordenar las referencias y como apoyo tanto en la redacción como en la implementación del código del servidor.
+
+---
+
+## Referencias
+
+Incluye las fuentes citadas en este README, en los documentos de [`docs/`](docs/) y en [`servidor-propio/`](servidor-propio/).
+
+Anthropic. (s.f.). *Connect Claude Code to tools via MCP*. Claude Code Docs. Recuperado el 12 de octubre de 2026, de https://code.claude.com/docs/en/mcp
+
+Anthropic. (2024, 25 de noviembre). *Introducing the Model Context Protocol*. https://www.anthropic.com/news/model-context-protocol
+
+Bengio, Y., Ducharme, R., Vincent, P. y Jauvin, C. (2003). A neural probabilistic language model. *Journal of Machine Learning Research, 3*, 1137–1155.
+
+Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., ... Amodei, D. (2020). Language models are few-shot learners. *Advances in Neural Information Processing Systems, 33*, 1877–1901. https://arxiv.org/abs/2005.14165
+
+DeepSeek-AI. (2025). *DeepSeek-R1: Incentivizing reasoning capability in LLMs via reinforcement learning* (arXiv:2501.12948). arXiv. https://arxiv.org/abs/2501.12948
+
+Google. (s.f.). *Model Context Protocol (MCP)*. Google Antigravity Docs. Recuperado el 12 de octubre de 2026, de https://antigravity.google/docs/mcp
+
+JSON-RPC Working Group. (2013). *JSON-RPC 2.0 specification*. https://www.jsonrpc.org/specification
+
+Kaplan, J., McCandlish, S., Henighan, T., Brown, T. B., Chess, B., Child, R., ... Amodei, D. (2020). *Scaling laws for neural language models* (arXiv:2001.08361). arXiv. https://arxiv.org/abs/2001.08361
+
+Microsoft. (s.f.). *Add and manage MCP servers in VS Code*. Visual Studio Code Docs. Recuperado el 12 de octubre de 2026, de https://code.visualstudio.com/docs/copilot/customization/mcp-servers
+
+Model Context Protocol. (s.f.-a). *Connect to local MCP servers*. Recuperado el 13 de octubre de 2026, de https://modelcontextprotocol.io/docs/develop/connect-local-servers
+
+Model Context Protocol. (s.f.-b). *Filesystem MCP server* (versión 1.0.0) [Software]. GitHub. https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
+
+Model Context Protocol. (2026a). *Specification* (versión 2026-07-28). https://modelcontextprotocol.io/specification/2026-07-28
+
+Model Context Protocol. (2026b). *Architecture overview*. https://modelcontextprotocol.io/docs/learn/architecture
+
+Model Context Protocol. (2026c). *Deprecated features* (versión 2026-07-28). https://modelcontextprotocol.io/specification/2026-07-28/deprecated
+
+Model Context Protocol. (2026d). *MCP TypeScript SDK* (versión 2.3.1) [Software]. GitHub. https://github.com/modelcontextprotocol/typescript-sdk
+
+OpenAI. (2024, 12 de septiembre). *Learning to reason with LLMs*. https://openai.com/index/learning-to-reason-with-llms/
+
+OWASP Gen AI Security Project. (2025). *LLM01:2025 Prompt injection*. https://genai.owasp.org/llmrisk/llm01-prompt-injection/
+
+Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł. y Polosukhin, I. (2017). Attention is all you need. *Advances in Neural Information Processing Systems, 30*. https://arxiv.org/abs/1706.03762
+
+Wei, J., Wang, X., Schuurmans, D., Bosma, M., Ichter, B., Xia, F., Chi, E., Le, Q. y Zhou, D. (2022). Chain-of-thought prompting elicits reasoning in large language models. *Advances in Neural Information Processing Systems, 35*. https://arxiv.org/abs/2201.11903

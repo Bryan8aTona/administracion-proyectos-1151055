@@ -77,7 +77,7 @@ Para probar `dias_restantes` le pregunté a Claude, el martes 13 de octubre de 2
 
 > Usa la herramienta dias_restantes para decirme cuántos días me quedan para entregar la Tarea 2. Se entrega el 17 de octubre de 2026.
 
-Claude convirtió la fecha a `2026-10-17` y pidió permiso para usar *Días restantes* de `ayudante-tareas`; en la ventana de permiso se ve la fecha que iba a mandar. Lo aprobé con *Permitir una vez*, el servidor leyó la fecha de mi computadora y Claude respondió que me quedan **4 días**: hoy es martes 13 de octubre y la entrega es el sábado 17.
+Claude convirtió la fecha a `2026-10-17` y pidió permiso para usar *Días restantes* de `ayudante-tareas`; en la ventana de permiso se ve la fecha que iba a mandar. Lo aprobé con *Permitir una vez*, el servidor leyó la fecha de mi computadora y Claude respondió que me quedan **4 días**: hoy es martes 13 de octubre y la entrega es el sábado 17. Al desplegar el bloque de la herramienta se ven la *Solicitud* que mandó Claude y la *Respuesta* tal como la escribió mi servidor: «Hoy es martes, 13 de octubre de 2026. Días que faltan para el 2026-10-17: 4.» Así se comprueba que la cuenta la hizo el servidor y no el modelo.
 
 Para probar `contar_palabras` usé el inicio del *Quijote*:
 

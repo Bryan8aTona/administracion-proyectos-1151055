@@ -73,17 +73,17 @@ Probado en Windows 11 con Git Bash y Claude Desktop 2.31226.1, con el servidor d
 
 En las preguntas pido usar la herramienta por su nombre. Si no, Claude a veces contesta de memoria sin llamar al servidor, justo lo que la herramienta busca evitar.
 
-Para probar `dias_restantes`, le pregunto a Claude:
+Para probar `dias_restantes` le pregunté a Claude, el martes 13 de octubre de 2026:
 
 > Usa la herramienta dias_restantes para decirme cuántos días me quedan para entregar la Tarea 2. Se entrega el 17 de octubre de 2026.
 
-Claude tiene que convertir la fecha a `2026-10-17` y llamar a `dias_restantes`. Al aprobar la llamada, el servidor responde con la fecha de hoy y los días que faltan.
+Claude convirtió la fecha a `2026-10-17` y pidió permiso para usar *Días restantes* de `ayudante-tareas`; en la ventana de permiso se ve la fecha que iba a mandar. Lo aprobé con *Permitir una vez*, el servidor leyó la fecha de mi computadora y Claude respondió que me quedan **4 días**: hoy es martes 13 de octubre y la entrega es el sábado 17.
 
-Para probar `contar_palabras`, le paso el párrafo de uso de IA de la Tarea 1:
+Para probar `contar_palabras` usé el inicio del *Quijote*:
 
-> Usa la herramienta contar_palabras para decirme cuántas palabras tiene este párrafo: «En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor.»
+> Usa la herramienta contar_palabras para decirme cuántas palabras tiene este párrafo: «En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor.
 
-El resultado esperado es 42 palabras y 258 caracteres.
+El servidor respondió **33 palabras y 177 caracteres**, contando espacios y signos de puntuación.
 
 ## Capturas
 

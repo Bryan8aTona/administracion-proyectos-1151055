@@ -14,6 +14,7 @@
 1. [Parte 1 · El entorno de desarrollo móvil](#parte-1--el-entorno-de-desarrollo-móvil)
 2. [Parte 2 · MCP: investigación](#parte-2--mcp-investigación)
 3. [Parte 3 · MCP: implementación](#parte-3--mcp-implementación)
+4. [Servidor MCP propio (opcional)](#servidor-mcp-propio-opcional)
 
 ---
 
@@ -263,3 +264,9 @@ Access denied - path outside allowed directories: C:\dev\fuera-de-mcp\secreto.tx
 | <img src="img/14a-mcp-limite.png" width="420" alt="Claude pide permiso para leer un archivo fuera de la carpeta"> | <img src="img/14b-mcp-limite.png" width="420" alt="Error Access denied del servidor filesystem"> |
 
 **Qué mecanismo lo impidió.** No fue el modelo ni la aprobación: yo permití la llamada. Lo impidió el propio servidor, que antes de tocar el disco valida cada ruta. La convierte a ruta absoluta, resuelve los `..` y los accesos directos, y comprueba que quede dentro de alguna carpeta de su lista de permitidas, que sale del último argumento de la configuración. Como `C:\dev\fuera-de-mcp` no está en esa lista, devuelve `Access denied` sin abrir el archivo. El límite no depende de que el modelo se porte bien: aunque se equivoque o lo engañen con instrucciones escondidas en un archivo, no puede salir de `C:\dev\mcp-tarea2`.
+
+## Servidor MCP propio (opcional)
+
+Programé un servidor MCP, `ayudante-tareas`, en JavaScript con el SDK oficial de TypeScript (`@modelcontextprotocol/server` 2.3.1). Tiene dos herramientas: `dias_restantes`, que dice cuántos días faltan para una fecha, y `contar_palabras`, que cuenta las palabras y los caracteres de un texto. A diferencia del servidor de archivos, no usa ninguna API ni toca el disco: hace el trabajo él mismo. Lo conecté a Claude Desktop junto al servidor `filesystem`.
+
+El código, la instalación paso a paso y las capturas están en [`servidor-propio/`](servidor-propio/).

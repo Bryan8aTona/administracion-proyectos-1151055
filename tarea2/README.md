@@ -19,6 +19,8 @@
 6. [Uso de inteligencia artificial](#uso-de-inteligencia-artificial)
 7. [Referencias](#referencias)
 
+Las diapositivas de la exposición están en [`presentacion/presentacion-mcp.pdf`](presentacion/presentacion-mcp.pdf).
+
 ---
 
 ## Parte 1 · El entorno de desarrollo móvil
